@@ -1,3 +1,5 @@
+package competition;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -122,7 +124,12 @@ public class Competitor {
 
     // Method to calculate the overall score
     public String getOverallScore() {
-        return String.format("Overall Score: %d", Math.round(scores.stream().mapToInt(Integer::intValue).average().orElse(0.0)));
+        double average = scores.stream().mapToInt(Integer::intValue).average().orElse(0.0);
+        double weightedAverage = calculateWeightedAverage();
+        double averageWithoutMinMax = calculateAverageWithoutMinMax();
+
+        return String.format("Overall Score:%n  Average: %d%n  Weighted Average: %d%n  Average without Min and Max: %d",
+                Math.round(average), Math.round(weightedAverage), Math.round(averageWithoutMinMax));
     }
 
     // Method to create a string representation of the Competitor object
@@ -177,6 +184,51 @@ public class Competitor {
     // Method to get the array of integer scores
     public int[] getScoreArray() {
         return scores.stream().mapToInt(Integer::intValue).toArray();
+    }
+
+    // Method to calculate the weighted average of scores based on levels
+    private double calculateWeightedAverage() {
+        double sum = 0;
+        double weightSum = 0;
+
+        for (int i = 0; i < scores.size(); i++) {
+            int score = scores.get(i);
+            int weight = getWeightForScoreAndLevel(score, level);
+            sum += score * weight;
+            weightSum += weight;
+        }
+
+        return weightSum > 0 ? sum / weightSum : 0;
+    }
+
+    // Method to calculate the average of scores disregarding the highest and lowest score
+    private double calculateAverageWithoutMinMax() {
+        if (scores.size() <= 2) {
+            return scores.stream().mapToInt(Integer::intValue).average().orElse(0.0);
+        }
+
+        int minScore = scores.stream().min(Integer::compare).orElse(0);
+        int maxScore = scores.stream().max(Integer::compare).orElse(0);
+
+        int sum = scores.stream().mapToInt(Integer::intValue).sum();
+        return (sum - minScore - maxScore) / (scores.size() - 2.0);
+    }
+
+    // Method to get the weight for a score based on level
+    private int getWeightForScoreAndLevel(int score, String level) {
+        // You can customize the weights based on your requirements
+        int baseWeight = 1;
+
+        switch (level.toLowerCase()) {
+            case "novice":
+                return baseWeight + 1; // Novice has higher weight
+            case "intermediate":
+                return baseWeight;
+            case "advanced":
+                return baseWeight - 1; // Advanced has lower weight
+            default:
+                return baseWeight;
+        }
     }
 
     // Example usage in the main method
