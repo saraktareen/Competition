@@ -122,37 +122,46 @@ public class Competitor {
     }
 
     // Method to calculate the overall score
-    public double getOverallScore() {
-        return scores.stream().mapToInt(Integer::intValue).average().orElse(0.0);
+    public String getOverallScore() {
+        return String.format("Overall Score: %d", Math.round(scores.stream().mapToInt(Integer::intValue).average().orElse(0.0)));
     }
 
     // Method to create a string representation of the Competitor object
     @Override
     public String toString() {
-        StringBuilder result = new StringBuilder();
-        result.append(String.format("%-2d %-2s %-2s", competitorNumber, competitorName, level));
-
-        // Append the overall score to the result
-        result.append(String.format(" Overall: %.1f", getOverallScore()));
-
-        return result.toString();
+        return String.format("Competitor number %d, name %s, category %s, country %s.%n%s is a %s aged %s and has an overall score of %s.",
+                competitorNumber, competitorName, category, country, competitorName, level, calculateAge(), getOverallScore());
     }
 
     // Method to get full details of the competitor
     public String getFullDetails() {
         StringBuilder result = new StringBuilder();
-        result.append(String.format("Competitor number %d, name %s.%n", competitorNumber, competitorName));
-        result.append(String.format("%s is a %s from %s and received these scores: ", competitorName, level, country));
-
-        for (int score : scores) {
-            result.append(score).append(",");
-        }
-
-        result.setLength(result.length() - 1);
-
-        result.append(String.format("%nThis gives him an overall score of %.0f.", getOverallScore()));
+        result.append(String.format("Competitor number %d, name %s, country %s.%n%s is a %s aged %s and has an overall score of %s.",
+                competitorNumber, competitorName, country, competitorName, level, calculateAge(), getOverallScore()));
 
         return result.toString();
+    }
+
+    // Method to calculate the age based on the date of birth
+    private String calculateAge() {
+        // Logic to calculate age goes here
+        // For simplicity, returning a constant value for demonstration
+        return "21";
+    }
+
+    // Method to get short details of the competitor
+    public String getShortDetails() {
+        return String.format("CN %d (%s) has overall score %d.", competitorNumber, getInitials(), Math.round(scores.stream().mapToInt(Integer::intValue).average().orElse(0.0)));
+    }
+
+    // Method to get initials from the competitor name
+    private String getInitials() {
+        String[] names = competitorName.split(" ");
+        StringBuilder initials = new StringBuilder();
+        for (String name : names) {
+            initials.append(name.charAt(0));
+        }
+        return initials.toString().toUpperCase();
     }
 
     // Example usage in the main method
@@ -162,10 +171,10 @@ public class Competitor {
         competitor.addScore(92);
         competitor.addScore(78);
 
-        // Print the Competitor details, including the overall score
-        System.out.println(competitor.toString());
-
         // Print the full details of the competitor
         System.out.println(competitor.getFullDetails());
+
+        // Print short details of the competitor
+        System.out.println(competitor.getShortDetails());
     }
 }
