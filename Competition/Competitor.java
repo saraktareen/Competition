@@ -1,7 +1,6 @@
-package competition;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Competitor {
 
@@ -18,7 +17,7 @@ public class Competitor {
     // Default constructor
     public Competitor() {
         // Initializes the scores list
-        this.scores = new ArrayList<>();
+        this.scores = generateRandomScores();
     }
 
     // Competitor constructor for the details
@@ -31,7 +30,7 @@ public class Competitor {
         this.category = category;
         this.level = level;
         this.country = country; // Initialize country
-        this.scores = new ArrayList<>();
+        this.scores = generateRandomScores();
     }
 
     // Getter and setter methods for Competitor properties
@@ -111,7 +110,7 @@ public class Competitor {
         return scores;
     }
 
-    // Setter for the Scores
+    // Instance variable for the array of Integer scores
     public void setScores(List<Integer> scores) {
         this.scores = scores;
     }
@@ -129,14 +128,14 @@ public class Competitor {
     // Method to create a string representation of the Competitor object
     @Override
     public String toString() {
-        return String.format("Competitor number %d, name %s, category %s, country %s.%n%s is a %s aged %s and has an overall score of %s.",
+        return String.format("Competitor number %d, name %s, category %s, country %s.%n%s is a %s aged %s and has an overall of %s.",
                 competitorNumber, competitorName, category, country, competitorName, level, calculateAge(), getOverallScore());
     }
 
     // Method to get full details of the competitor
     public String getFullDetails() {
         StringBuilder result = new StringBuilder();
-        result.append(String.format("Competitor number %d, name %s, country %s.%n%s is a %s aged %s and has an overall score of %s.",
+        result.append(String.format("Competitor number %d, name %s, country %s.%n%s is a %s aged %s and has an %s.",
                 competitorNumber, competitorName, country, competitorName, level, calculateAge(), getOverallScore()));
 
         return result.toString();
@@ -147,17 +146,6 @@ public class Competitor {
         // Logic to calculate age goes here
         // For simplicity, returning a constant value for demonstration
         return "21";
-    }
-
-    // Method to generate a random number of scores between 4 and 6, and each score value between 0 and 5
-    private List<Integer> generateRandomScores() {
-        Random random = new Random();
-        int numberOfScores = random.nextInt(3) + 4; // Random number between 4 and 6
-        List<Integer> scores = new ArrayList<>();
-        for (int i = 0; i < numberOfScores; i++) {
-            scores.add(random.nextInt(6)); // Random score between 0 and 5
-        }
-        return scores;
     }
 
     // Method to get short details of the competitor
@@ -175,17 +163,36 @@ public class Competitor {
         return initials.toString().toUpperCase();
     }
 
+    // Method to generate a random number of scores between 4 and 6, and each score value between 0 and 5
+    private List<Integer> generateRandomScores() {
+        Random random = new Random();
+        int numberOfScores = random.nextInt(3) + 4; // Random number between 4 and 6
+        List<Integer> scores = new ArrayList<>();
+        for (int i = 0; i < numberOfScores; i++) {
+            scores.add(random.nextInt(6)); // Random score between 0 and 5
+        }
+        return scores;
+    }
+
+    // Method to get the array of integer scores
+    public int[] getScoreArray() {
+        return scores.stream().mapToInt(Integer::intValue).toArray();
+    }
+
     // Example usage in the main method
     public static void main(String[] args) {
         Competitor competitor = new Competitor(1, "John Doe", "john@example.com", "2000-01-01", "Category A", "Intermediate", "USA");
-        competitor.addScore(85);
-        competitor.addScore(92);
-        competitor.addScore(78);
-
         // Print the full details of the competitor
         System.out.println(competitor.getFullDetails());
 
         // Print short details of the competitor
         System.out.println(competitor.getShortDetails());
+
+        // Print the array of integer scores
+        int[] scoreArray = competitor.getScoreArray();
+        System.out.print("Scores: ");
+        for (int score : scoreArray) {
+            System.out.print(score + " ");
+        }
     }
 }
