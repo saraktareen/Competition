@@ -128,31 +128,32 @@ public class Competitor {
         double weightedAverage = calculateWeightedAverage();
         double averageWithoutMinMax = calculateAverageWithoutMinMax();
 
-        return String.format("Overall Score:%n  Average: %d%n  Weighted Average: %d%n  Average without Min and Max: %d",
-                Math.round(average), Math.round(weightedAverage), Math.round(averageWithoutMinMax));
+        return String.format("This gives him an overall score of %.1f.", averageWithoutMinMax);
     }
 
     // Method to create a string representation of the Competitor object
     @Override
     public String toString() {
-        return String.format("Competitor number %d, name %s, category %s, country %s.%n%s is a %s aged %s and has an overall of %s.",
-                competitorNumber, competitorName, category, country, competitorName, level, calculateAge(), getOverallScore());
+        return String.format("%s is a %s aged %s and received these scores: %s%n%s",
+                competitorName, level, calculateAge(), scoresAsString(), getOverallScore());
     }
 
     // Method to get full details of the competitor
     public String getFullDetails() {
-        StringBuilder result = new StringBuilder();
-        result.append(String.format("Competitor number %d, name %s, country %s.%n%s is a %s aged %s and has an %s.",
-                competitorNumber, competitorName, country, competitorName, level, calculateAge(), getOverallScore()));
-
-        return result.toString();
+        return String.format("%s is a %s aged %s and received these scores: %s%n%s",
+                competitorName, level, calculateAge(), scoresAsString(), getOverallScore());
     }
 
     // Method to calculate the age based on the date of birth
-    private String calculateAge() {
-        // Logic to calculate age goes here
-        // For simplicity, returning a constant value for demonstration
-        return "21";
+    private int calculateAge() {
+        if (dateOfBirth == null || dateOfBirth.isEmpty()) {
+            return 0; // Return 0 if date of birth is not available
+        }
+
+        LocalDate birthDate = LocalDate.parse(dateOfBirth);
+        LocalDate currentDate = LocalDate.now();
+        Period period = Period.between(birthDate, currentDate);
+        return period.getYears();
     }
 
     // Method to get short details of the competitor
@@ -170,6 +171,11 @@ public class Competitor {
         return initials.toString().toUpperCase();
     }
 
+    // Method to get the array of integer scores
+    public int[] getScoreArray() {
+        return scores.stream().mapToInt(Integer::intValue).toArray();
+    }
+
     // Method to generate a random number of scores between 4 and 6, and each score value between 0 and 5
     private List<Integer> generateRandomScores() {
         Random random = new Random();
@@ -181,9 +187,14 @@ public class Competitor {
         return scores;
     }
 
-    // Method to get the array of integer scores
-    public int[] getScoreArray() {
-        return scores.stream().mapToInt(Integer::intValue).toArray();
+    // Method to convert scores to a string
+    private String scoresAsString() {
+        StringBuilder result = new StringBuilder();
+        for (int score : scores) {
+            result.append(score).append(",");
+        }
+        result.setLength(result.length() - 1);
+        return result.toString();
     }
 
     // Method to calculate the weighted average of scores based on levels
@@ -233,18 +244,8 @@ public class Competitor {
 
     // Example usage in the main method
     public static void main(String[] args) {
-        Competitor competitor = new Competitor(1, "John Doe", "john@example.com", "2000-01-01", "Category A", "Intermediate", "USA");
+        Competitor competitor = new Competitor(1, "Keith John Talbot", "keith@example.com", "2000-01-01", "Category A", "Novice", "UK");
         // Print the full details of the competitor
         System.out.println(competitor.getFullDetails());
-
-        // Print short details of the competitor
-        System.out.println(competitor.getShortDetails());
-
-        // Print the array of integer scores
-        int[] scoreArray = competitor.getScoreArray();
-        System.out.print("Scores: ");
-        for (int score : scoreArray) {
-            System.out.print(score + " ");
-        }
     }
 }
