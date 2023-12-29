@@ -118,15 +118,27 @@ public class Competitor {
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
-        result.append(String.format("%-5d %-20s %-15s", competitorNumber, competitorName, level));
-
-        result.append(" ");
-        for (int score : scores) {
-            result.append(score).append(" ");
-        }
+        result.append(String.format("%-2d %-2s %-2s", competitorNumber, competitorName, level));
 
         // Append the overall score to the result
-        result.append(String.format("   Overall: %.1f", getOverallScore()));
+        result.append(String.format(" Overall: %.1f", getOverallScore()));
+
+        return result.toString();
+    }
+
+    // Method to get full details of the competitor
+    public String getFullDetails() {
+        StringBuilder result = new StringBuilder();
+        result.append(String.format("Competitor number %d, name %s.%n", competitorNumber, competitorName));
+        result.append(String.format("%s is a %s and received these scores : ", competitorName, level));
+
+        for (int score : scores) {
+            result.append(score).append(",");
+        }
+
+        result.setLength(result.length() - 1);
+
+        result.append(String.format("%nThis gives him an overall score of %.0f.", getOverallScore()));
 
         return result.toString();
     }
@@ -140,5 +152,8 @@ public class Competitor {
 
         // Print the Competitor details, including the overall score
         System.out.println(competitor.toString());
+
+        // Print the full details of the competitor
+        System.out.println(competitor.getFullDetails());
     }
 }
