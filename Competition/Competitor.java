@@ -3,10 +3,12 @@ package competition;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.time.LocalDate;
+import java.time.Period;
 
 public class Competitor {
 
-    // Properties of the Competitor class
+    // Competitor class
     private int competitorNumber;
     private String competitorName;
     private String email;
@@ -18,7 +20,7 @@ public class Competitor {
 
     // Default constructor
     public Competitor() {
-        // Initializes the scores list
+        // Initializes the randomized scores list
         this.scores = generateRandomScores();
     }
 
@@ -31,7 +33,7 @@ public class Competitor {
         this.dateOfBirth = dateOfBirth;
         this.category = category;
         this.level = level;
-        this.country = country; // Initialize country
+        this.country = country;
         this.scores = generateRandomScores();
     }
 
@@ -107,7 +109,7 @@ public class Competitor {
         this.country = country;
     }
 
-    // Getter for the Scores
+    // Getter for the Scores Array
     public List<Integer> getScores() {
         return scores;
     }
@@ -124,27 +126,27 @@ public class Competitor {
 
     // Method to calculate the overall score
     public String getOverallScore() {
-        double average = scores.stream().mapToInt(Integer::intValue).average().orElse(0.0);
+        double average = scores.stream().mapToInt(Integer::intValue).average().orElse(0.0); // Calculates average in a stream, if there are no values, it returns 0.0
         double weightedAverage = calculateWeightedAverage();
         double averageWithoutMinMax = calculateAverageWithoutMinMax();
 
-        return String.format("This gives him an overall score of %.1f.", averageWithoutMinMax);
+        return String.format("This gives him an overall score of %.1f.", averageWithoutMinMax); // Shows the overall score as a decimal value
     }
 
     // Method to create a string representation of the Competitor object
     @Override
     public String toString() {
         return String.format("%s is a %s aged %s and received these scores: %s%n%s",
-                competitorName, level, calculateAge(), scoresAsString(), getOverallScore());
+                competitorName, level, calculateAge(), scoresAsString(), getOverallScore()); // Output of the details of the competitor
     }
 
     // Method to get full details of the competitor
     public String getFullDetails() {
         return String.format("%s is a %s aged %s and received these scores: %s%n%s",
-                competitorName, level, calculateAge(), scoresAsString(), getOverallScore());
+                competitorName, level, calculateAge(), scoresAsString(), getOverallScore()); // Output of the details of the competitor
     }
 
-    // Method to calculate the age based on the date of birth
+    // Calculated the age of the competitor from the date of birth provided
     private int calculateAge() {
         if (dateOfBirth == null || dateOfBirth.isEmpty()) {
             return 0; // Return 0 if date of birth is not available
@@ -163,12 +165,13 @@ public class Competitor {
 
     // Method to get initials from the competitor name
     private String getInitials() {
-        String[] names = competitorName.split(" ");
+        String[] names = competitorName.split(" "); // Splits the string where there is a space
         StringBuilder initials = new StringBuilder();
+        // Loops through each name in the array to append the first character
         for (String name : names) {
             initials.append(name.charAt(0));
         }
-        return initials.toString().toUpperCase();
+        return initials.toString().toUpperCase(); // Shows them as an upper case value
     }
 
     // Method to get the array of integer scores
@@ -227,9 +230,7 @@ public class Competitor {
 
     // Method to get the weight for a score based on level
     private int getWeightForScoreAndLevel(int score, String level) {
-        // You can customize the weights based on your requirements
         int baseWeight = 1;
-
         switch (level.toLowerCase()) {
             case "novice":
                 return baseWeight + 1; // Novice has higher weight
@@ -244,7 +245,7 @@ public class Competitor {
 
     // Example usage in the main method
     public static void main(String[] args) {
-        Competitor competitor = new Competitor(1, "Keith John Talbot", "keith@example.com", "2000-01-01", "Category A", "Novice", "UK");
+        Competitor competitor = new Competitor(1, "Keith John Talbot", "keith@example.com", "2001-01-01", "Category A", "Novice", "UK");
         // Print the full details of the competitor
         System.out.println(competitor.getFullDetails());
     }
