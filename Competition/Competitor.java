@@ -149,6 +149,17 @@ public class Competitor {
         return "21";
     }
 
+    // Method to generate a random number of scores between 4 and 6, and each score value between 0 and 5
+    private List<Integer> generateRandomScores() {
+        Random random = new Random();
+        int numberOfScores = random.nextInt(3) + 4; // Random number between 4 and 6
+        List<Integer> scores = new ArrayList<>();
+        for (int i = 0; i < numberOfScores; i++) {
+            scores.add(random.nextInt(6)); // Random score between 0 and 5
+        }
+        return scores;
+    }
+
     // Method to get short details of the competitor
     public String getShortDetails() {
         return String.format("CN %d (%s) has overall score %d.", competitorNumber, getInitials(), Math.round(scores.stream().mapToInt(Integer::intValue).average().orElse(0.0)));
