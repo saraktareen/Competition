@@ -12,6 +12,7 @@ public class Competitor {
     private String dateOfBirth;
     private String category;
     private String level;
+    private String country; // Added country property
     private List<Integer> scores;
 
     // Default constructor
@@ -22,13 +23,14 @@ public class Competitor {
 
     // Competitor constructor for the details
     public Competitor(int competitorNumber, String competitorName, String email, String dateOfBirth,
-                      String category, String level) {
+                      String category, String level, String country) {
         this.competitorNumber = competitorNumber;
         this.competitorName = competitorName;
         this.email = email;
         this.dateOfBirth = dateOfBirth;
         this.category = category;
         this.level = level;
+        this.country = country; // Initialize country
         this.scores = new ArrayList<>();
     }
 
@@ -94,6 +96,16 @@ public class Competitor {
         this.level = level;
     }
 
+    // Getter for the Country
+    public String getCountry() {
+        return country;
+    }
+
+    // Setter for the Country
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
     // Getter for the Scores
     public List<Integer> getScores() {
         return scores;
@@ -130,7 +142,7 @@ public class Competitor {
     public String getFullDetails() {
         StringBuilder result = new StringBuilder();
         result.append(String.format("Competitor number %d, name %s.%n", competitorNumber, competitorName));
-        result.append(String.format("%s is a %s and received these scores : ", competitorName, level));
+        result.append(String.format("%s is a %s from %s and received these scores: ", competitorName, level, country));
 
         for (int score : scores) {
             result.append(score).append(",");
@@ -145,7 +157,7 @@ public class Competitor {
 
     // Example usage in the main method
     public static void main(String[] args) {
-        Competitor competitor = new Competitor(1, "John Doe", "john@example.com", "2000-01-01", "Category A", "Intermediate");
+        Competitor competitor = new Competitor(1, "John Doe", "john@example.com", "2000-01-01", "Category A", "Intermediate", "USA");
         competitor.addScore(85);
         competitor.addScore(92);
         competitor.addScore(78);
