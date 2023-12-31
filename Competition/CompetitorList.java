@@ -6,6 +6,7 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
@@ -111,21 +112,50 @@ public class CompetitorList {
 
  // Method to enter competitor details to a CSV file
     public void enterCompetitorDetailsToFile(Competitor competitor) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(csvFilePath, true))) {
-            // Convert the list of integers to a list of strings
+        try (BufferedWriter csvWriter = new BufferedWriter(new FileWriter(csvFilePath, true));
+             PrintWriter txtWriter = new PrintWriter(new FileWriter("C:\\Users\\PC\\Desktop\\CompetitorReport.txt", true))) {
+
+        	// Convert the list of integers to a list of strings
             List<String> scoreStrings = new ArrayList<>();
             for (Integer score : competitor.getScores()) {
                 scoreStrings.add(String.valueOf(score));
             }
-
-            // Join the list of strings
-            String competitorData = String.format("%d,%s,%s,%s,%s,%s",
+            // Save to CSV file
+            String csvData = String.format("%d,%s,%s,%s,%s",
                     competitor.getCompetitorNumber(), competitor.getCompetitorName(),
-                    calculateAge(competitor.getDateOfBirth()), competitor.getGender(), competitor.getCountry(),
+                    calculateAge(competitor.getDateOfBirth()), competitor.getGender(),
                     String.join(",", scoreStrings));
-            writer.write(competitorData);
-            writer.newLine();
-            System.out.println("Competitor details written to the file successfully.");
+            csvWriter.write(csvData);
+            csvWriter.newLine();
+            System.out.println("CSV: Competitor details written to the file successfully.");
+
+            // Save to text file
+            String txtData = String.format("%d,%s,%s,%s,%s,%s,%s,%s",
+                    competitor.getCompetitorNumber(), competitor.getCompetitorName(),
+                    competitor.getEmail(), competitor.getDateOfBirth(),
+                    competitor.getGender(), competitor.getCategory(), competitor.getLevel(),
+                    String.join(",", scoreStrings));
+
+            txtWriter.println(txtData);
+            System.out.println("Text: Full details written to the file successfully.");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+ // Method to display the full details of all competitors in the list   
+    public void printFullDetailsToFile(String filePath) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("C:\\Users\\PC\\Desktop\\CompetitorReport.txt"))) {
+            String line;
+
+            // Print a message indicating the start of reading
+            System.out.println("Reading file contents:");
+
+            while ((line = reader.readLine()) != null) {
+                // Print each line
+                System.out.println(line);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -147,4 +177,6 @@ public class CompetitorList {
         LocalDate currentDate = LocalDate.now();
         return Period.between(birthDate, currentDate).getYears();
     }
+    
+    
 }
