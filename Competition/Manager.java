@@ -1,19 +1,53 @@
 package competition;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Scanner;
 
 public class Manager {
 
     public static void main(String[] args) {
-        // Creating a CompetitorList object
-        CompetitorList competitorList = new CompetitorList();
+        // Predefined CSV file path
+        String filePath = "C:\\Users\\PC\\Desktop\\RunCompetitor.csv";
 
-        // Adding competitors to the list
-        competitorList.addCompetitor(new Competitor(1, "Keith John Talbot", "keith@example.com", "2001-01-01", "Category A", "Novice", "UK"));
-        // Add more competitors as needed...
+        // Creating a CompetitorList object with file handling
+        CompetitorList competitorList = new CompetitorList(filePath);
 
-        // Displaying the full details of each competitor in the list
-        competitorList.displayCompetitorsDetails();
-    }
+        Scanner scanner = new Scanner(System.in);
+
+        // Displaying menu options
+        int choice = 0;
+
+        // Use a single Scanner for System.in
+            do {
+                System.out.println("Menu:");
+                System.out.println("1. Register Competitor");
+                System.out.println("2. View Competitors Details");
+                System.out.println("3. Exit");
+
+                // Handling user input
+                System.out.print("Enter your choice: ");
+
+                    choice = scanner.nextInt(); // Get the user's choice
+                    scanner.nextLine(); // Consume newline left by nextInt()
+
+                    switch (choice) {
+                        case 1:
+                            competitorList.registerCompetitor();
+                            System.out.println("Competitor registered successfully!");
+                            break;
+                        case 2:
+                            System.out.println("Competitors Details:");
+                            competitorList.displayCompetitorsDetails();
+                            break;
+                        case 3:
+                            System.out.println("Exiting...");
+                            break;
+                        default:
+                            System.out.println("Invalid choice!");
+                    }
+
+
+            } while (choice != 3);
+            scanner.close();
+
+        }
 }
