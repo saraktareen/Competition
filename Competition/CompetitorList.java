@@ -1,4 +1,3 @@
-// CompetitorList.java
 package competition;
 
 import java.io.*;
@@ -123,8 +122,6 @@ public class CompetitorList {
         }
     }
 
-    
-    
     private void addDataToTextFile(String content) {
         try (PrintWriter txtWriter = new PrintWriter(new FileWriter("C:\\Users\\PC\\Desktop\\CompetitorReport.txt", true))) {
             txtWriter.println(content);
@@ -133,7 +130,7 @@ public class CompetitorList {
             e.printStackTrace();
         }
     }
-    
+
     private void calculateAndPrintHighestOverallScore(String highestScorerDetails) {
         String[] parts = highestScorerDetails.split(",");
         int competitorNumber = Integer.parseInt(parts[0]);
@@ -178,9 +175,6 @@ public class CompetitorList {
                     int overallScore = calculateOverallScore(line);
                     int totalScore = calculateTotalScores(line);
 
-                    System.out.println("Competitor Name: " + competitorName);
-                    System.out.println("Total Score: " + totalScore);
-
                     if (overallScore > maxOverallScore) {
                         maxOverallScore = overallScore;
                         highestScorerDetails = line;
@@ -190,23 +184,52 @@ public class CompetitorList {
 
             if (highestScorerDetails != null) {
                 calculateAndPrintHighestOverallScore(highestScorerDetails);
-
-                // Print competitor name and total score
-                String[] parts = highestScorerDetails.split(",");
-                int competitorNumber = Integer.parseInt(parts[0]);
-                String competitorName = parts[1];
-                int overallScore = calculateOverallScore(highestScorerDetails);
-
-                System.out.println("Competitor Name: " + competitorName);
-                System.out.println("Total Score: " + overallScore);
+                printTotalCompetitorScoresToFile(filePath);
             } else {
                 System.out.println("\nNo competitors found in the file.");
+                return;
             }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    public void printTotalCompetitorScoresToFile(String filePath) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath));
+             PrintWriter txtWriter = new PrintWriter(new FileWriter("C:\\Users\\PC\\Desktop\\CompetitorReport.txt", true))) {
+
+            String line;
+            List<String> totalScores = new ArrayList<>();
+
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length > 1 && !parts[0].isEmpty()) {
+                    String competitorName = parts[1];
+                    int totalScore = calculateTotalScores(line);
+
+                    // Add a condition to skip lines with a total score of 0
+                    if (totalScore > 0) {
+                        totalScores.add(competitorName + ": " + totalScore);
+                    }
+                }
+            }
+
+            System.out.println("\n=============== TOTAL COMPETITOR SCORES ===============");
+            addDataToTextFile("=============== TOTAL COMPETITOR SCORES ===============");
+            for (String score : totalScores) {
+                System.out.println(score);
+                addDataToTextFile(score);
+            }
+
+            System.out.println("Total scores written to the file successfully.");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    
     private int calculateAge(String dateOfBirth) {
         if (dateOfBirth == null || dateOfBirth.isEmpty()) {
             return 0;
