@@ -12,6 +12,8 @@ import java.util.Scanner;
 
 public class CompetitorList {
 
+
+
     private List<Competitor> competitors;
     private String csvFilePath;
 
@@ -55,10 +57,22 @@ public class CompetitorList {
     public void registerCompetitor() {
         try (Scanner scanner = new Scanner(System.in)) {
             do {
-                System.out.println("Enter competitor number:");
-                int competitorNumber = scanner.nextInt();
-                scanner.nextLine(); // Consume newline left by nextInt()
+                int competitorNumber;
+                boolean isUnique;
 
+                do {
+                    System.out.println("Enter competitor number:");
+                    competitorNumber = scanner.nextInt();
+                    scanner.nextLine(); // Consume newline left by nextInt()
+
+                    isUnique = isCompetitorNumberUniqueInFile(competitorNumber, csvFilePath);
+
+                    if (!isUnique) {
+                        System.out.println("Competitor number " + competitorNumber + " is already assigned. Please enter another one.");
+                    }
+                } while (!isUnique);
+
+                // Prompt for other details
                 System.out.println("Enter competitor name:");
                 String competitorName = scanner.nextLine();
 
@@ -91,6 +105,12 @@ public class CompetitorList {
                 }
 
                 Competitor competitor = new Competitor(competitorNumber, competitorName, email, dateOfBirth, category, level, country, gender, scores);
+
+                if (!isCompetitorNumberUniqueInFile(competitorNumber, csvFilePath)) {
+                    System.out.println("Competitor number " + competitorNumber + " is already assigned in the file. Please enter another one.");
+                    continue;
+                }
+
                 addCompetitor(competitor);
 
                 System.out.println("---------------Competitor registered successfully!---------------");
@@ -102,7 +122,25 @@ public class CompetitorList {
             } while (scanner.next().equalsIgnoreCase("Y"));
         }
     }
-    
+
+    private boolean isCompetitorNumberUniqueInFile(int competitorNumber, String filePath) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length > 0 && !parts[0].isEmpty()) {
+                    int existingCompetitorNumber = Integer.parseInt(parts[0]);
+                    if (existingCompetitorNumber == competitorNumber) {
+                        return false; // Competitor number is not unique in the file
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return true; // Competitor number is unique in the file
+    }
+
 
 
 //  =============================================== ENTER DETAILS TO TEXT FILE ===============================================
@@ -160,22 +198,37 @@ public class CompetitorList {
         int competitorNumber = Integer.parseInt(parts[0]);
         String competitorName = parts[1];
         int overallScore = calculateOverallScore(highestScorerDetails);
+        int[] scores = new int[5];  // Assuming there are 5 scores
+
+        // Extract individual scores and update the scores array
+        for (int i = 0; i < 5; i++) {
+            scores[i] = Integer.parseInt(parts[8 + i]);
+        }
+
+        // Find the highest and lowest scores
+        int highestScore = Arrays.stream(scores).max().orElse(0);
+        int lowestScore = Arrays.stream(scores).min().orElse(0);
 
         System.out.println("=============== HIGHEST OVERALL SCORE ===============");
         System.out.println("\nCompetitor with the highest overall score:");
         System.out.println("Competitor Number: " + competitorNumber);
         System.out.println("Competitor Name: " + competitorName);
-        System.out.println("Scores: " + parts[8] + ", " + parts[9] + ", " + parts[10] + ", " + parts[11] + ", " + parts[12]);
+        System.out.println("Scores: " + Arrays.toString(scores));
         System.out.println("Overall Score: " + overallScore);
+        System.out.println("Maximum Score: " + highestScore);
+        System.out.println("Minimum Score: " + lowestScore);
 
         // Add data to text file
         addDataToTextFile("=============== HIGHEST OVERALL SCORE ===============\n" +
                 "Competitor with the highest overall score:\n" +
                 "Competitor Number: " + competitorNumber + "\n" +
                 "Competitor Name: " + competitorName + "\n" +
-                "Scores: " + parts[8] + ", " + parts[9] + ", " + parts[10] + ", " + parts[11] + ", " + parts[12] + "\n" +
-                "Overall Score: " + overallScore);
+                "Scores: " + Arrays.toString(scores) + "\n" +
+                "Overall Score: " + overallScore + "\n" +
+                "Maximum Score: " + highestScore + "\n" +
+                "Minimum Score: " + lowestScore);
     }
+
 
     
     
@@ -276,6 +329,8 @@ public class CompetitorList {
         }
     }
 
+
+    
     
     
 //  =============================================== MINIMUM COMPETITOR SCORES ===============================================
@@ -358,7 +413,10 @@ public class CompetitorList {
                 int score = entry.getKey();
                 int frequency = entry.getValue();
 
-                String reportLine = "Score " + score + " awarded " + frequency + " time(s)";
+                // Display stars based on frequency
+                String stars = "*".repeat(frequency);
+
+                String reportLine = score + " - " + stars + " (" + frequency + ")";
                 System.out.println(reportLine);
                 addDataToTextFile(reportLine);
             }
@@ -502,4 +560,14 @@ public class CompetitorList {
     private void initializeCompetitors() {
         // Implement this method based on your requirements
     }
+
+//=============================================== AGE ===============================================
+
+	//Add this method to CompetitorList class
+	public void showShortDetailsForAll() {
+	 for (Competitor competitor : competitors) {
+	     competitor.getShortDetails();
+	 }
+	}
 }
+
