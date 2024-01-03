@@ -62,6 +62,10 @@ public class CompetitorList {
 
                 do {
                     System.out.println("Enter competitor number:");
+                    while (!scanner.hasNextInt()) {
+                        System.out.println("Invalid input! Please enter a valid competitor number:");
+                        scanner.next(); // Consume invalid input
+                    }
                     competitorNumber = scanner.nextInt();
                     scanner.nextLine(); // Consume newline left by nextInt()
 
@@ -73,33 +77,79 @@ public class CompetitorList {
                 } while (!isUnique);
 
                 // Prompt for other details
-                System.out.println("Enter competitor name:");
-                String competitorName = scanner.nextLine();
+                String competitorName;
+                do {
+                    System.out.println("Enter competitor name:");
+                    competitorName = scanner.nextLine();
 
-                System.out.println("Enter email:");
-                String email = scanner.nextLine();
+                    if (!isValidCompetitorName(competitorName)) {
+                        System.out.println("Invalid input! Please enter a valid competitor name:");
+                    }
+                } while (!isValidCompetitorName(competitorName));
 
-                System.out.println("Enter date of birth (YYYY-MM-DD):");
-                String dateOfBirth = scanner.nextLine();
+                String email;
+                do {
+                    System.out.println("Enter email:");
+                    email = scanner.nextLine();
+
+                    if (!isValidEmail(email)) {
+                        System.out.println("Invalid input! Please enter a valid email address:");
+                    }
+                } while (!isValidEmail(email));
+
+                String dateOfBirth;
+                do {
+                    System.out.println("Enter date of birth (YYYY-MM-DD):");
+                    dateOfBirth = scanner.nextLine();
+
+                    if (!isValidDateFormat(dateOfBirth)) {
+                        System.out.println("Invalid input! Please enter a valid date of birth:");
+                    }
+                } while (!isValidDateFormat(dateOfBirth));
 
                 int age = calculateAge(dateOfBirth);
 
-                System.out.println("Enter category:");
-                String category = scanner.nextLine();
+                // Automatically determine the level based on age
+                String level = determineCompetitorLevel(age);
 
-                System.out.println("Enter level:");
-                String level = scanner.nextLine();
+                String category;
+                do {
+                    System.out.println("Enter category:");
+                    category = scanner.nextLine();
 
-                System.out.println("Enter gender:");
-                char gender = scanner.next().charAt(0);
+                    if (!isValidCategory(category)) {
+                        System.out.println("Invalid input! Please enter a valid category name:");
+                    }
+                } while (!isValidCategory(category));
 
-                System.out.println("Enter country:");
-                scanner.nextLine(); // Consume newline left by next()
-                String country = scanner.nextLine();
+                char gender;
+                do {
+                    System.out.println("Enter gender (M/F):");
+                    gender = scanner.next().charAt(0);
+                    scanner.nextLine(); // Consume newline left by next()
+
+                    if (!isValidGender(gender)) {
+                        System.out.println("Invalid input! Please enter a valid gender (M/F).");
+                    }
+                } while (!isValidGender(gender));
+
+                String country;
+                do {
+                    System.out.println("Enter country:");
+                    country = scanner.nextLine();
+
+                    if (!isValidCountry(country)) {
+                        System.out.println("Invalid input! Please enter a valid country name:");
+                    }
+                } while (!isValidCountry(country));
 
                 List<Integer> scores = new ArrayList<>();
                 for (int i = 1; i <= 5; i++) {
                     System.out.println("Enter score " + i + ":");
+                    while (!scanner.hasNextInt()) {
+                        System.out.println("Invalid input! Please enter a valid score:");
+                        scanner.next(); // Consume invalid input
+                    }
                     int score = scanner.nextInt();
                     scores.add(score);
                 }
@@ -120,6 +170,45 @@ public class CompetitorList {
                 // Ask if the user wants to register another competitor
                 System.out.println("Do you want to register another competitor? (Y/N)");
             } while (scanner.next().equalsIgnoreCase("Y"));
+        }
+    }
+
+    private boolean isValidDateFormat(String dateOfBirth) {
+        // Validate that the date of birth follows the format YYYY-MM-DD
+        return dateOfBirth.matches("\\d{4}-\\d{2}-\\d{2}");
+    }
+
+    private boolean isValidCountry(String country) {
+        // Validate that the country does not contain integers or symbols
+        return country.matches("[a-zA-Z\\s]+");
+    }
+
+    private boolean isValidGender(char gender) {
+        // Validate that the gender is either 'M' or 'F'
+        return gender == 'M' || gender == 'F';
+    }
+
+    private boolean isValidCategory(String category) {
+        // Validate that the category does not contain integers or symbols
+        return category.matches("[a-zA-Z ]+");
+    }
+
+    private boolean isValidEmail(String email) {
+        // Simple email validation using a regular expression
+        return email.matches("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}");
+    }
+    
+    private boolean isValidCompetitorName(String name) {
+        return name.matches("[A-Za-z ]+");
+    }
+    // New method to determine the level based on age
+    private String determineCompetitorLevel(int age) {
+        if (age <= 18) {
+            return "Novice";
+        } else if (age <= 30) {
+            return "Intermediate";
+        } else {
+            return "Expert";
         }
     }
 
