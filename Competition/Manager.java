@@ -1,14 +1,19 @@
 package competition;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Scanner;
 
 public class Manager {
 
     private final CompetitorList competitorList;
+    private final String textFilePath;
 
-    public Manager(String filePath) {
+    public Manager(String filePath, String textFilePath) {
         // Creating a CompetitorList object with file handling
-        this.competitorList = new CompetitorList(filePath);
+        this.competitorList = new CompetitorList(filePath, textFilePath);
+        this.textFilePath = textFilePath;
     }
 
     public void run() {
@@ -39,32 +44,35 @@ public class Manager {
                     case 3:
                         System.out.println("Debug: Printing Final Report");
                         System.out.println("Competitors Details in the Text File:");
+
+                        // Clear the text file before printing the final report
+                        clearTextFile(textFilePath);
+
+                        // Print the final report
                         printFinalReport();
                         break;
-//                    case 4:
-//                        System.out.println("Debug: Showing Short Details");
-//                        competitorList.showShortDetails();
-//                        break;
-//                    case 5:
-//                        System.out.println("Debug: Showing Overall Highest Score");
-//                        competitorList.showOverallHighestScore();
-//                        break;
-//                    case 6:
-//                        System.out.println("Debug: Showing Total Scores");
-//                        competitorList.showTotalScores();
-//                        break;
-//                    case 7:
-//                        System.out.println("Debug: Showing Average Scores");
-//                        competitorList.showAverageScores();
-//                        break;
                     case 4:
+                        System.out.println("Debug: Showing Competitor Details as per the Number Entered");
+                        competitorList.displayCompetitorDetailsByNumber();
+                        break;
+                    case 5:
                         System.out.println("Debug: Exiting...");
                         break;
                     default:
                         System.out.println("Debug: Invalid choice!");
                 }
 
-            } while (choice != 4);
+            } while (choice != 6);
+        }
+    }
+
+    private void clearTextFile(String textFilePath) {
+        try (PrintWriter txtWriter = new PrintWriter(new FileWriter(textFilePath, false))) {
+            // Open the file in overwrite mode (false) to clear the contents
+            txtWriter.print("");
+            System.out.println("Text file cleared successfully.");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -86,11 +94,9 @@ public class Manager {
         System.out.println("1. Register Competitor");
         System.out.println("2. View Competitors Details");
         System.out.println("3. Print Final Report");
-//        System.out.println("4. Show short details");
-//        System.out.println("5. Show overall highest score");
-//        System.out.println("6. Show total scores");
-//        System.out.println("7. Show average scores");
-        System.out.println("4. Exit");
+        System.out.println("4. Show the competitor details as per the competitor number entered");
+        System.out.println("5. Show the competitors short details");
+        System.out.println("6. Exit");
     }
 
     private void registerCompetitor() {
@@ -99,15 +105,16 @@ public class Manager {
 
     private void printFinalReport() {
         System.out.println("============ Final Report ============");
-        competitorList.printFullDetailsToFile("C:\\Users\\PC\\Desktop\\CompetitorReport.txt");
+        competitorList.printFullDetailsToFile("C:\\Users\\PC\\Desktop\\RunCompetitor.csv", textFilePath);
         System.out.println("Final report printed successfully!");
     }
 
     public static void main(String[] args) {
-        // Predefined CSV file path
+        // Predefined CSV file path and text file path
         String filePath = "C:\\Users\\PC\\Desktop\\RunCompetitor.csv";
-        
-        Manager manager = new Manager(filePath);
+        String textFilePath = "C:\\Users\\PC\\Desktop\\CompetitorReport.txt";
+
+        Manager manager = new Manager(filePath, textFilePath);
         manager.run();
     }
 }

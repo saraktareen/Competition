@@ -2,7 +2,6 @@ package competition;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.time.LocalDate;
 import java.time.Period;
 
@@ -16,29 +15,33 @@ public class Competitor {
     private String category;
     private String level;
     private String country; // Added country property
+    private char gender; // Added country property
     private List<Integer> scores;
 
-    // Default constructor
-    public Competitor() {
-        // Initializes the randomized scores list
-        this.scores = generateRandomScores();
+    private List<Competitor> competitors;
+    private String csvFilePath;
+    private String textFilePath;
+
+    public Competitor(String csvFilePath, String textFilePath) {
+        this.competitors = new ArrayList<>();
+        this.csvFilePath = csvFilePath;
+        this.textFilePath = textFilePath;
     }
 
-    // Competitor constructor for the details
     public Competitor(int competitorNumber, String competitorName, String email, String dateOfBirth,
-                      String category, String level, String country) {
-        this.competitorNumber = competitorNumber;
-        this.competitorName = competitorName;
-        this.email = email;
-        this.dateOfBirth = dateOfBirth;
-        this.category = category;
-        this.level = level;
-        this.country = country;
-        this.scores = generateRandomScores();
-    }
+            String category, String level, String country, char gender, List<Integer> scores) {
+		this.competitorNumber = competitorNumber;
+		this.competitorName = competitorName;
+		this.email = email;
+		this.dateOfBirth = dateOfBirth;
+		this.category = category;
+		this.level = level;
+		this.country = country;
+		this.gender = gender;
+		this.scores = scores;
+		}
 
     // Getter and setter methods for Competitor properties
-
     // Getter for the CompetitionNumber
     public int getCompetitorNumber() {
         return competitorNumber;
@@ -108,6 +111,16 @@ public class Competitor {
     public void setCountry(String country) {
         this.country = country;
     }
+    
+    // Getter for the Country
+    public char getGender() {
+        return gender;
+    }
+
+    // Setter for the Country
+    public void setGender(char gender) {
+        this.gender = gender;
+    }
 
     // Getter for the Scores Array
     public List<Integer> getScores() {
@@ -124,6 +137,9 @@ public class Competitor {
         scores.add(score);
     }
 
+    
+ 
+    
     // Method to calculate the overall score
     public String getOverallScore() {
         double average = scores.stream().mapToInt(Integer::intValue).average().orElse(0.0); // Calculates average in a stream, if there are no values, it returns 0.0
@@ -159,9 +175,11 @@ public class Competitor {
     }
 
     // Method to get short details of the competitor
-    public String getShortDetails() {
+    public String getShortDetails(int competitorNumber, String filePath) {
         return String.format("CN %d (%s) has overall score %d.", competitorNumber, getInitials(), Math.round(scores.stream().mapToInt(Integer::intValue).average().orElse(0.0)));
     }
+
+
 
     // Method to get initials from the competitor name
     private String getInitials() {
@@ -179,16 +197,16 @@ public class Competitor {
         return scores.stream().mapToInt(Integer::intValue).toArray();
     }
 
-    // Method to generate a random number of scores between 4 and 6, and each score value between 0 and 5
-    private List<Integer> generateRandomScores() {
-        Random random = new Random();
-        int numberOfScores = random.nextInt(3) + 4; // Random number between 4 and 6
-        List<Integer> scores = new ArrayList<>();
-        for (int i = 0; i < numberOfScores; i++) {
-            scores.add(random.nextInt(6)); // Random score between 0 and 5
-        }
-        return scores;
-    }
+//    // Method to generate a random number of scores between 4 and 6, and each score value between 0 and 5
+//    private List<Integer> generateRandomScores() {
+//        Random random = new Random();
+//        int numberOfScores = random.nextInt(3) + 4; // Random number between 4 and 6
+//        List<Integer> scores = new ArrayList<>();
+//        for (int i = 0; i < numberOfScores; i++) {
+//            scores.add(random.nextInt(6)); // Random score between 0 and 5
+//        }
+//        return scores;
+//    }
 
     // Method to convert scores to a string
     private String scoresAsString() {
@@ -242,11 +260,13 @@ public class Competitor {
                 return baseWeight;
         }
     }
+    
+    
 
-    // Example usage in the main method
-    public static void main(String[] args) {
-        Competitor competitor = new Competitor(1, "Keith John Talbot", "keith@example.com", "2001-01-01", "Category A", "Novice", "UK");
-        // Print the full details of the competitor
-        System.out.println(competitor.getFullDetails());
-    }
+//    // Example usage in the main method
+//    public static void main(String[] args) {
+//    	Competitor competitor = new Competitor();
+//        // Print the full details of the competitor
+//        System.out.println(competitor.getFullDetails());
+//    }
 }
