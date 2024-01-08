@@ -1,0 +1,22 @@
+Competitors:
+Competitor Number | Name | Category | Level | Age | Email | Gender | Country |Scores
+1 | Sara | Football | Intermediate  | 23 | sara@gmail.com | Female | UK | [1, 2, 3, 4, 1]
+2 | Samia | Football | Intermediate  | 22 | samia@gmail.com | Female | UK | [2, 3, 4, 2, 1]
+3 | Neha | Hockey | Intermediate  | 23 | neha@gmail.com | Female | UK | [2, 3, 4, 5, 1]
+4 | Naima | Football | Intermediate  | 22 | naima@gmail.com | male | pakistan | [1, 2, 3, 1, 2]
+
+Competitor with the highest overall score:
+Competitor Number: 3, Name: Neha, Overall Score: 3.00
+
+Summary Statistics:
+Total Competitors: 4
+Average Overall Score: 2.35
+Maximum Overall Score: 3.0
+Minimum Overall Score: 1.8
+Frequency Report:
+0 - (0) 
+1 - (6) ******
+2 - (6) ******
+3 - (4) ****
+4 - (3) ***
+5 - (1) *
